@@ -1,5 +1,5 @@
 <launch>
-    <arg name="drone_id" default="karteek_drone" />
+    <arg name="drone_id" default="cf" />
     <arg name="uri" default="radio://0/80/2M" />
    
    

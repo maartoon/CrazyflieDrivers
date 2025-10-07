@@ -1,5 +1,5 @@
 <launch>
-    <arg name="drone_id" default_value="karteek_drone" />
+    <arg name="drone_id" default_value="cf" />
 
     <rosparam file="$(find crazyflie_ros)/config/controller_params.yaml" command="load" ns="controller" />
     

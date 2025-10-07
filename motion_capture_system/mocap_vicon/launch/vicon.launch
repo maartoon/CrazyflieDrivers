@@ -9,8 +9,8 @@
     <param name="publish_tf" value="false"/>
     <param name="fixed_frame_id" value="world"/>
     <rosparam param="model_list">[]</rosparam>
-    <remap from="vicon/karteek_drone/odom" to="/karteek_drone/odom"/>
-    <remap from="vicon/karteek_drone/pose" to="/karteek_drone/pose"/>
+    <remap from="vicon/cf/odom" to="/cf/odom"/>
+    <remap from="vicon/cf/pose" to="/cf/pose"/>
     <remap from="vicon/gate1/odom" to="/gate1/odom"/>
     <remap from="vicon/gate1/pose" to="/gate1/pose"/>
     <remap from="vicon/gate2/odom" to="/gate2/odom"/>

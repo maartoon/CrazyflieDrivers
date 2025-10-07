@@ -1,0 +1,24 @@
+<launch>
+  <node pkg="mocap_vicon"
+    type="mocap_vicon_node"
+    name="vicon"
+    output="screen">
+    <param name="server_address" value="192.168.1.2"/>
+    <param name="frame_rate" value="100"/>
+    <param name="max_accel" value="10.0"/>
+    <param name="publish_tf" value="false"/>
+    <param name="fixed_frame_id" value="world"/>
+    <rosparam param="model_list">[]</rosparam>
+    <remap from="vicon/karteek_drone/odom" to="/karteek_drone/odom"/>
+    <remap from="vicon/karteek_drone/pose" to="/karteek_drone/pose"/>
+    <remap from="vicon/gate1/odom" to="/gate1/odom"/>
+    <remap from="vicon/gate1/pose" to="/gate1/pose"/>
+    <remap from="vicon/gate2/odom" to="/gate2/odom"/>
+    <remap from="vicon/gate2/pose" to="/gate2/pose"/>
+    <remap from="vicon/gate3/odom" to="/gate3/odom"/>
+    <remap from="vicon/gate3/pose" to="/gate3/pose"/>
+    <remap from="vicon/gate4/odom" to="/gate4/odom"/>
+    <remap from="vicon/gate4/pose" to="/gate4/pose"/>
+    
+  </node>
+</launch>

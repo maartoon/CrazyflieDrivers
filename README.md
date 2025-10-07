@@ -134,7 +134,7 @@ Your task is to implement the core logic in two files: trajectory.py and control
     In this file, you will complete the plan() method inside the Planner class.
 
     Your Goal:
-    
+
         Solve a trajectory optimization problem to find a dynamically feasible, time-optimal path through a series of waypoints.
 
     Requirements:
@@ -169,3 +169,5 @@ Your task is to implement the core logic in two files: trajectory.py and control
         Your solve function will receive the drone's current_state and a list of future reference_states (the horizon).
 
         Your controller must return the desired linear accelerations (ax, ay, az) and the desired yaw_rate in world frame.
+
+Refer "crazyflie_ros/src/crazyflie_ros/controllers.py" and "crazyflie_ros/src/crazyflie_ros/trajectory.py for more detailed instructions.

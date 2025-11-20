@@ -14,8 +14,10 @@ This project provides a complete ROS Noetic software interface for developing an
 
 
 ## Code Structure
-![Repo Structure](NodeGraph.png)
+
 ![Node Graph](repo.png)
+![Repo Structure](NodeGraph.png)
+
 
 
 

@@ -18,6 +18,21 @@ This project provides a complete ROS Noetic software interface for developing an
 ![Node Graph](repo.png)
 ![Repo Structure](NodeGraph.png)
 
+## FalconGym-to-Crazyflie
+
+###TO-DO:
+
+Complete controller.py in crazyflie_ros/src/crazyflie_ros/controller.py
+
+1. Copy scripts/ece484_state_controller.py state_controller() function to crazyflie_ros/src/crazyflie_ros/controller.py Dronecontroller.solve()
+2. Note Dronecontroller.solve() function takes current state and reference/setpoint state.
+3. crazyflie_ros/src/crazyflie_ros/controller.py is a class based controller if you implement mpc/lqr or pid use Dronecontroller.iinit() to initialize your controllers parameters accordingly
+
+Complete Trajectory.py in crazyflie_ros/src/crazyflie_ros/trajectory.py
+
+1. If you haven't implemented a trajectory function before then use this script to generate one. Complete Planner.plan() function. Implement B-spline/cubic spline or other interpolating polynomial splines.
+2. If you have already used a trajectory planner then simply paste the planning algorithm in Planner.py. Refer to each function head for more details.
+3. NOTE: planner is expected to output full reference state [poses,velocities, accelerations, yaws, timestamps]. If you plan on not using velocity and acceleration reference waypoints simply append them with zero.
 
 
 

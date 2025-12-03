@@ -56,7 +56,7 @@ class Driver:
 
 if __name__ == '__main__':
     URI = rospy.get_param("~uri", 'radio://0/80/2M')
-    DRONE_ID = rospy.get_param("~drone_id", 'karteek_drone')
+    DRONE_ID = rospy.get_param("~drone_id", 'cf')
 
     cflib.crtp.init_drivers()
     driver = Driver(uri=URI, drone_id=DRONE_ID)

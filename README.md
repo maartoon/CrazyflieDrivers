@@ -147,6 +147,46 @@ The system consists of two Packages that work in concert:
     rosservice call /trajectory_node/start_trajectory "{}"
     ```
 
+5. If you dont have a trajectory planner, Feel free to use the demo trajectory planner
+
+    ```
+    roslaunch crazyflie_ros trajectory_demo.launch 
+
+    ```
+
+    ```
+    $ rosservice call /plan_trajectory "waypoints:
+    header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: 'world'
+    poses:
+    - position: {x: 0.16, y: 1.32, z: 0.820}                          #Gate A
+        orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0} 
+    - position: {x: 2.5766, y: -1.02365, z: 0.757011}                 #Gate B
+        orientation: {x: 0.0, y: 0.0, z: -0.707, w: 0.707}
+    - position: {x: 0.3761, y: -2.992, z: 0.7246}                     #Gate C
+        orientation: {x: 0.0, y: 0.0, z: 1.0, w: 0.0} 
+    - position: {x: -1.745, y: -1.098, z: 0.711}                      #Gate D
+        orientation: {x: 0.0, y: 0.0, z: 0.707, w: 0.707}
+    - position: {x: 0.16, y: 1.32, z: 0.820}                          #Final_pose
+        orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}"
+    
+    ```
+
+    Upon successfull planning you will notice the following in the terminal
+
+    ```
+    success: True
+    message: "Trajectory planned successfully! Total time: 15.77s"
+    ```
+
+    TO publish the trajectory wavepoints 
+    
+    ```
+    rosservice call /start_publishing "{}"
+    ```
+
 
 ## TODO: Task Description
 Your task is to implement the core logic in two files: trajectory.py and controllers.py.

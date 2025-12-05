@@ -36,6 +36,26 @@ class DroneController:
         self.vmax = vmax
         self.amax = amax
 
+
+        # PID gains for x, y, z axes control.
+        self.KP = np.array([7.9, 7.9, 10.0])  # position gains
+        self.KV = np.array([4.0, 4.0, 8.0])    # velocity gains (damping)
+        self.KI = np.array([0.05, 0.05, 0.004])
+        # YAW gains
+        self.YAW_KP = 2.0
+        self.YAW_KD = 0.8
+
+        self.INTEGRAL_LIMIT = np.array([2.0, 2.0, 2.0])
+        self._integral_error = np.zeros(3)
+        self._prev_yaw_error = 0.0
+    def reset_integrator(self):
+        """Expose a helper to reset PID integrator memory between simulations."""
+        self._integral_error = np.zeros(3)
+        self._prev_yaw_error = 0.0
+
+    def _wrap_angle(angle):
+        """Wrap any angle to [-pi, pi] for consistent yaw error calculations."""
+        return (angle + np.pi) % (2 * np.pi) - np.pi
     def solve(self, current_state, reference_states):
         """
         Calculates the required control commands (accelerations and yaw rate)
@@ -71,10 +91,46 @@ class DroneController:
         #TODO: Implement your control logic here.
         # You can use libraries like CasADi for optimization if needed.
         # Make sure to respect the velocity and acceleration constraints of crazyflie.
+        state = np.asarray(current_state, dtype=float).reshape(7)
+        reference = np.asarray(reference_states, dtype=float).reshape(7)
 
+        p   = state[0:3]
+        v   = state[3:6]
+        yaw = state[6]
 
-        ax,ay,az, yaw_rate = 0,0,0,0
-        return ax,ay,az, yaw_rate
+        p_d   = reference[0:3]
+        v_d   = reference[3:6]
+        yaw_d = reference[6]
+
+        e_p = p_d - p
+        e_v = v_d - v
+
+        self._integral_error += e_p * self.dt
+        self._integral_error = np.clip(_integral_error, -INTEGRAL_LIMIT, INTEGRAL_LIMIT)
+
+        # altitude-priority blending
+        ez = e_p[2]
+        ez_max = 0.5  # meters. smaller => stronger "z first"
+        alpha = np.clip(1.0 - abs(ez)/ez_max, 0.0, 1.0)
+
+        accel_cmd = self.KP * e_p + self.KI * _integral_error + self.KV * e_v
+        accel_cmd[0:2] *= alpha
+        accel_cmd = np.clip(accel_cmd, -self.amax, self.amax)
+
+        # Convert world accelerations into body-frame components for dynamics integration.
+        c, s = np.cos(yaw), np.sin(yaw)
+        ax_body = accel_cmd[0] * c + accel_cmd[1] * s
+        ay_body = -accel_cmd[0] * s + accel_cmd[1] * c
+        accel_body = np.array([ax_body, ay_body, accel_cmd[2]])
+
+        e_yaw = _wrap_angle(yaw_d - yaw)
+        e_yaw_rate = (e_yaw - self._prev_yaw_error)/self.dt
+        yaw_rate_cmd = self.YAW_KP*e_yaw + self.YAW_KD*e_yaw_rate
+        self._prev_yaw_error = e_yaw
+
+        control = np.hstack((accel_body, yaw_rate_cmd))
+        control = np.clip(control, -2.0, 2.0)
+        return tuple(control.tolist())
 
 
 

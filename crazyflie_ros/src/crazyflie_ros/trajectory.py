@@ -13,6 +13,39 @@ import numpy as np
 import casadi as ca
 from scipy.spatial.transform import Rotation as R
 import math
+from scipy.interpolate import splprep, splev
+
+def quaternion_to_rpy(quat):
+    """
+    Convert quaternion [qx, qy, qz, qw] to roll, pitch, yaw (in radians).
+    """
+    r = R.from_quat(quat)
+    return r.as_euler('xyz', degrees=False)  # [r, p, y]
+
+def rotz(yaw: float) -> np.ndarray:
+    """Rotation about global +z."""
+    c, s = np.cos(yaw), np.sin(yaw)
+    return np.array([[c, -s, 0],
+                     [s,  c, 0],
+                     [0,  0, 1]])
+
+
+def gate_normal_from_yaw(yaw: float) -> np.ndarray:
+    """Gate-local +x axis expressed in world frame."""
+    R = rotz(yaw)
+    n_local = np.array([1.0, 0.0, 0.0])
+    n_world = R @ n_local
+    return n_world / np.linalg.norm(n_world)
+
+
+def build_corridor_anchors(gate_centers: np.ndarray,
+                           gate_yaws: np.ndarray,
+                           corridor_len: float) -> np.ndarray:
+    anchors = []
+    for center, yaw in zip(gate_centers, gate_yaws):
+        n = gate_normal_from_yaw(yaw)
+        anchors.extend([center - corridor_len * n, center, center + corridor_len * n])
+    return np.asarray(anchors, dtype=float)
 
 class Planner:
     """
@@ -47,6 +80,12 @@ class Planner:
         self.accelerations = None
         self.yaws = None
         self.cumulative_times = None
+
+        # B-Spline planner params
+        self.corridor_len = 0.5
+        self.num_samples = 20
+        self.start_position = np.array([1.0, 0, 1.0])
+        self.reference_path
 
 
     def plan(self, waypoints):
@@ -85,12 +124,30 @@ class Planner:
         #    - self.accelerations: A list or array of planned (ax, ay, az) accelerations.
         #    - self.yaws: A list or array of planned yaw angles.
         #    - self.cumulative_times: A list or array of the time at each point in the trajectory.
-        
-        # Example check after solving:
-        if cumulative_times is None or self.poses is None or self.velocities is None or self.accelerations is None or self.yaws is None :
-            return False # Planning failed
-        else:
-            return True # Planning successful
+        gate_centers = np.array(w[:3] for w in waypoints, dtype=float)
+        gate_yaws = np.array(w[5] for w in waypoints, dtype=float)
+
+        start = np.asarray(self.start_position, dtype=float).reshape(3)
+        anchors = np.vstack([start[None, :], build_corridor_anchors(gate_centers, gate_yaws, self.corridor_len)])
+
+        degree = min(3, len(anchors) - 1)
+        tck, _ = splprep(anchors.T, s=0.0, k=degree)
+        u = np.linspace(0, 1, self.num_samples)
+
+        positions = np.array(splev(u, tck)).T
+        tangents = np.array(splev(u, tck, der=1)).T
+        yaws = np.arctan2(tangents[:, 1], tangents[:, 0])
+        yaws = (yaws + np.pi) % (2 * np.pi) - np.pi
+
+        zeros_vel = np.zeros((self.num_samples, 3))
+        self.reference_path = np.column_stack((positions, zeros_vel, yaws))
+        returm True
+
+        # # Example check after solving:
+        # if cumulative_times is None or self.poses is None or self.velocities is None or self.accelerations is None or self.yaws is None :
+        #     return False # Planning failed
+        # else:
+        #     return True # Planning successful
 
 
     def evaluate(self, t):

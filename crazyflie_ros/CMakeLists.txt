@@ -22,9 +22,7 @@ add_service_files(
 catkin_python_setup()
 
 
-generate_dynamic_reconfigure_options(
-  cfg/PID.cfg
-)
+
 
 generate_messages(
   DEPENDENCIES
@@ -47,6 +45,5 @@ catkin_install_python(PROGRAMS
   scripts/driver_node.py
   scripts/trajectory_node.py
   scripts/trajectory_node2.py
-  scripts/cas_pid_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

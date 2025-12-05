@@ -18,3 +18,8 @@ success: True
 message: "Trajectory planned successfully! Total time: 15.77s"
 karteek@karteek-XPS-13-9305:~/cf_ws$ rosservice call /start_publishing "{}"
 
+
+
+
+# Hover at (0, 0.0, 1) meters
+rostopic pub -1 /cf/setpoint trajectory_msgs/MultiDOFJointTrajectory "header: {stamp: now}, points: [ { transforms: [ { translation: {x: 0, y: 0.0, z: 1}, rotation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0} } ], velocities: [ { linear: {x: 0.0, y: 0.0, z: 0.0} } ] } ]"

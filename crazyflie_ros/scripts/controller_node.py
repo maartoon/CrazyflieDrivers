@@ -7,7 +7,6 @@ from trajectory_msgs.msg import MultiDOFJointTrajectory
 from crazyflie_ros.controllers import DroneController
 import numpy as np
 from tf.transformations import euler_from_quaternion
-from crazyflie_ros.cfg import ControllerConfig
 import time
 
 class Controller:

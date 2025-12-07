@@ -39,11 +39,11 @@ class DroneController:
 
         # PID gains for x, y, z axes control.
         self.KP = np.array([7.9, 7.9, 10.0])  # position gains
-        self.KV = np.array([4.0, 4.0, 8.0])    # velocity gains (damping)
-        self.KI = np.array([0.05, 0.05, 0.004])
+        self.KV = 0 * np.array([4.0, 4.0, 8.0])    # velocity gains (damping)
+        self.KI = 0 * np.array([0.05, 0.05, 0.004])
         # YAW gains
-        self.YAW_KP = 2.0
-        self.YAW_KD = 0.8
+        self.YAW_KP = 0 * 2.0
+        self.YAW_KD = 0 * 0.8
 
         self.INTEGRAL_LIMIT = np.array([2.0, 2.0, 2.0])
         self._integral_error = np.zeros(3)

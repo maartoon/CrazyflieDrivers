@@ -69,11 +69,11 @@ class Controller:
 
                 reference_states = []
 
-                point = self.reference_trajectory
+                point = self.reference_trajectory.points[0] 
 
+                # Now access transforms and velocities from the 'point' object
                 pos = point.transforms[0].translation
                 vel = point.velocities[0].linear
-                
                 # Convert quaternion to yaw for this reference point
                 ref_q = point.transforms[0].rotation
                 (_, _, ref_yaw) = euler_from_quaternion([ref_q.x, ref_q.y, ref_q.z, ref_q.w])
@@ -85,6 +85,7 @@ class Controller:
                     ref_yaw
                 ]))
 
+                
                 if reference_states:
                     ax,ay,az, yaw_rate_cmd = self.controller.solve(current_state, reference_states) 
                     # Populate the Accel message

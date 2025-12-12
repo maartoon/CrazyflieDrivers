@@ -18,3 +18,50 @@ success: True
 message: "Trajectory planned successfully! Total time: 15.77s"
 karteek@karteek-XPS-13-9305:~/cf_ws$ rosservice call /start_publishing "{}"
 
+
+
+
+# Hover at (0, 0.0, 1) meters
+rostopic pub -1 /cf/setpoint trajectory_msgs/MultiDOFJointTrajectory \
+'{header: {stamp: now}, points: [{transforms: [{translation: {x: 0.0, y: 0.0, z: 1.0}, rotation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}], velocities: [{linear: {x: 0.0, y: 0.0, z: 0.0}}]}]}'
+
+
+
+
+
+rosservice call /plan_trajectory "waypoints:
+  header:
+    seq: 0
+    stamp: {secs: 0, nsecs: 0}
+    frame_id: 'world'
+  poses:
+  - position: {x: 0.5, y: 0.8, z: 0.85}
+    orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}
+  - position: {x: 2.25, y: -0.98, z: 0.85}
+    orientation: {x: 0.0, y: 0.0, z: -0.707, w: 0.707}
+  - position: {x: 0.55, y: -2.72, z: 0.85}
+    orientation: {x: 0.0, y: 0.0, z: 1.0, w: 0.0}
+  - position: {x: -0.93, y: -1.02, z: 0.85}
+    orientation: {x: 0.0, y: 0.0, z: 0.707, w: 0.707}
+  - position: {x: 0.51, y: 0.8, z: 0.85}
+    orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}"
+
+
+
+rostopic pub -1 /cf/setpoint trajectory_msgs/MultiDOFJointTrajectoryPoint \
+'{transforms: [{translation: {x: -1.19, y: 0.5, z: 1.0}, rotation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}], velocities: [{linear: {x: 0.0, y: 0.0, z: 0.0}}]}'
+
+
+
+rosservice call /plan_trajectory "waypoints:
+  header:
+    seq: 0
+    stamp: {secs: 0, nsecs: 0}
+    frame_id: 'world'
+  poses:
+  - position: {x: 1.131694388206432, y: -0.7994174775784262, z: 0.8389938659662713}
+    orientation: {x: 0.8673623090997361, y: -0.17822912488532025, z: 0.35973091549559993, w: -0.29412696617699713}
+  - position: {x: 0.5099511338754114, y: -2.2633460335816387, z: 0.831125145111029}
+    orientation: {x: 0.38532194660736163, y: 0.6631225828168159, z: -0.5635557199794932, w: -0.30692081731199594}
+  - position: {x: 0.32624957124372667, y: -2.8616511165787464, z: 0.8621841360032646}
+    orientation: {x: 0.021936619782677514, y: 0.8966629583969357, z: 0.012890650754296046, w: -0.4419820752864264}"
